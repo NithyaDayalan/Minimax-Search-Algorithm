@@ -1,12 +1,12 @@
 <h1>ExpNo 5 : Implement Minimax Search Algorithm for a Simple TIC-TAC-TOE game</h1> 
-<h3>Name:           </h3>
-<h3>Register Number/Staff Id:          </h3>
-<H3>Aim:</H3>
+<h3>Name : NITHYA D        </h3>
+<h3>Register Number : 212223240110          </h3>
+<H3>Aim :</H3>
 <p>
     Implement Minimax Search Algorithm for a Simple TIC-TAC-TOE game
 </p>
 
-<H3>Theory and Procedure:</H3>
+<H3>Theory and Procedure :</H3>
 To begin, let's start by defining what it means to play a perfect game of tic tac toe:
 
 If I play perfectly, every time I play I will either win the game, or I will draw the game. Furthermore if I play against another perfect player, I will always draw the game.
@@ -103,7 +103,7 @@ def minimax(game)
 end
 
 <hr>
-<h2>Sample Input and Output</h2>
+<h2>Sample Input and Output :</h2>
 
 ![image](https://github.com/natsaravanan/19AI405FUNDAMENTALSOFARTIFICIALINTELLIGENCE/assets/87870499/6b668685-8bcc-43c5-b5c2-ddd43f3da84a)
 ![image](https://github.com/natsaravanan/19AI405FUNDAMENTALSOFARTIFICIALINTELLIGENCE/assets/87870499/8ca1b08a-8312-4ef5-89df-e69b7b2c3fa2)
@@ -112,5 +112,127 @@ end
 ![image](https://github.com/natsaravanan/19AI405FUNDAMENTALSOFARTIFICIALINTELLIGENCE/assets/87870499/a2acb6a1-ed8e-42e5-8968-fe805e4b0255)
 
 <hr>
-<h2>Result:</h2>
+<h2> Program : </h2>
+<pre>
+import time
+
+class TicTacToe:
+    def initialize_game(self):
+        self.current_state = [['.', '.', '.'],
+                              ['.', '.', '.'],
+                              ['.', '.', '.']]
+        self.player_turn = 'X'
+
+    def draw_board(self):
+        for i in range(3):
+            for j in range(3):
+                print(f'{self.current_state[i][j]}|', end=" ")
+            print()
+        print()
+
+    def is_valid(self, px, py):
+        return 0 <= px <= 2 and 0 <= py <= 2 and self.current_state[px][py] == '.'
+
+    def is_end(self):
+        for i in range(3):
+            if self.current_state[0][i] != '.' and self.current_state[0][i] == self.current_state[1][i] == self.current_state[2][i]:
+                return self.current_state[0][i]
+        for i in range(3):
+            if self.current_state[i] == ['X', 'X', 'X']:
+                return 'X'
+            elif self.current_state[i] == ['O', 'O', 'O']:
+                return 'O'
+        if self.current_state[0][0] != '.' and self.current_state[0][0] == self.current_state[1][1] == self.current_state[2][2]:
+            return self.current_state[0][0]
+        if self.current_state[0][2] != '.' and self.current_state[0][2] == self.current_state[1][1] == self.current_state[2][0]:
+            return self.current_state[0][2]
+        for i in range(3):
+            for j in range(3):
+                if self.current_state[i][j] == '.':
+                    return None
+        return '.'
+
+    def max(self):
+        maxv = -2
+        px = py = None
+        result = self.is_end()
+        if result == 'X':
+            return -1, 0, 0
+        elif result == 'O':
+            return 1, 0, 0
+        elif result == '.':
+            return 0, 0, 0
+        for i in range(3):
+            for j in range(3):
+                if self.current_state[i][j] == '.':
+                    self.current_state[i][j] = 'O'
+                    m, _, _ = self.min()
+                    if m > maxv:
+                        maxv, px, py = m, i, j
+                    self.current_state[i][j] = '.'
+        return maxv, px, py
+
+    def min(self):
+        minv = 2
+        qx = qy = None
+        result = self.is_end()
+        if result == 'X':
+            return -1, 0, 0
+        elif result == 'O':
+            return 1, 0, 0
+        elif result == '.':
+            return 0, 0, 0
+        for i in range(3):
+            for j in range(3):
+                if self.current_state[i][j] == '.':
+                    self.current_state[i][j] = 'X'
+                    m, _, _ = self.max()
+                    if m < minv:
+                        minv, qx, qy = m, i, j
+                    self.current_state[i][j] = '.'
+        return minv, qx, qy
+
+    def play(self):
+        while True:
+            self.draw_board()
+            result = self.is_end()
+            if result is not None:
+                if result == 'X':
+                    print('The winner is X!')
+                elif result == 'O':
+                    print('The winner is O!')
+                else:
+                    print("It's a tie!")
+                self.initialize_game()
+                return
+            if self.player_turn == 'X':
+                while True:
+                    start = time.time()
+                    m, qx, qy = self.min()
+                    end = time.time()
+                    print(f'Evaluation time: {round(end - start, 7)}s')
+                    print(f'Recommended move: X = {qx}, Y = {qy}')
+                    px = int(input('Insert the X coordinate: '))
+                    py = int(input('Insert the Y coordinate: '))
+                    if self.is_valid(px, py):
+                        self.current_state[px][py] = 'X'
+                        self.player_turn = 'O'
+                        break
+                    else:
+                        print('The move is not valid! Try again.')
+            else:
+                m, px, py = self.max()
+                self.current_state[px][py] = 'O'
+                self.player_turn = 'X'
+
+
+game = TicTacToe()
+game.initialize_game()
+game.play()
+
+</pre>   
+<h2> Output : </h2>
+    <img width="491" height="548" alt="image" src="https://github.com/user-attachments/assets/23ff02d1-44f1-4ad5-b18f-1d32412e8326" />
+
+<h2>Result :</h2>
 <p>Thus,Implementation of  Minimax Search Algorithm for a Simple TIC-TAC-TOE game wasa done successfully.</p>
